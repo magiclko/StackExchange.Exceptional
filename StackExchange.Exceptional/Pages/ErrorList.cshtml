@@ -48,7 +48,8 @@ else
                 <th>Error</th>
                 <th>Url</th>
                 <th>Remote IP</th>
-                <th>Time</th>
+                <th>First Time</th>
+                <th>Last Time</th>
                 <th>Site</th>
                 <th>Server</th>
             </tr>
@@ -84,6 +85,14 @@ else
                 </td>
                 <td>@e.IPAddress</td>
                 <td><span title="@(string.Format("{0:G} -- {1:u}", e.CreationDate, e.CreationDate.ToUniversalTime()))">@e.CreationDate.ToRelativeTime()</span></td>
+                <td>
+                    @if (e.LastDuplicateDate.HasValue) {
+                        <span title="@(string.Format("{0:G} -- {1:u}", e.LastDuplicateDate.Value, e.LastDuplicateDate.Value.ToUniversalTime()))">@e.LastDuplicateDate.Value.ToRelativeTime()</span>
+                    }
+                    else {
+                        @: unknown
+                    }
+                </td>
                 <td>@e.Host</td>
                 <td>@e.MachineName</td>
             </tr>

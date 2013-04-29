@@ -154,13 +154,13 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Views\Test\Form.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\StackExchange.Exceptional\StackExchange.Exceptional.csproj">
       <Project>{da84a7a0-8042-4b2b-a000-3579dd419d2a}</Project>
       <Name>StackExchange.Exceptional</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Test\Form.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,0 +1,1 @@
+ALTER TABLE Exceptions ADD [LastDuplicateDate] [datetime] NULL;

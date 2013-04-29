@@ -18,7 +18,8 @@
 	[DeletionDate] [datetime] NULL,
 	[FullJson] [nvarchar](max) NULL,
 	[ErrorHash] [int] NULL,
-	[DuplicateCount] [int] NOT NULL default(1)
+	[DuplicateCount] [int] NOT NULL default(1),
+	[LastDuplicateDate] [datetime] NULL
  CONSTRAINT [PK_Exceptions] PRIMARY KEY CLUSTERED ([Id] ASC)
  WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 )

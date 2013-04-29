@@ -1,11 +1,11 @@
+using StackExchange.Exceptional.Dapper;
+using StackExchange.Exceptional.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System;
-using StackExchange.Exceptional.Dapper;
-using StackExchange.Exceptional.Extensions;
 
 namespace StackExchange.Exceptional.Stores
 {
@@ -155,12 +155,14 @@ Update Exceptions
                             error.DuplicateCount,
                             error.ErrorHash,
                             ApplicationName,
-                            minDate = DateTime.UtcNow.Add(RollupThreshold.Value.Negate())
+                            minDate = DateTime.UtcNow.Add(RollupThreshold.Value.Negate()),
+                            error.LastDuplicateDate
                         });
                     queryParams.Add("@newGUID", dbType: DbType.Guid, direction: ParameterDirection.Output);
                     var count = c.Execute(@"
 Update Exceptions 
    Set DuplicateCount = DuplicateCount + @DuplicateCount,
+       LastDuplicateDate = @LastDuplicateDate,
        @newGUID = GUID
  Where Id In (Select Top 1 Id
                 From Exceptions 
@@ -179,8 +181,8 @@ Update Exceptions
                 error.FullJson = error.ToJson();
 
                 c.Execute(@"
-Insert Into Exceptions (GUID, ApplicationName, MachineName, CreationDate, Type, IsProtected, Host, Url, HTTPMethod, IPAddress, Source, Message, Detail, StatusCode, SQL, FullJson, ErrorHash, DuplicateCount)
-Values (@GUID, @ApplicationName, @MachineName, @CreationDate, @Type, @IsProtected, @Host, @Url, @HTTPMethod, @IPAddress, @Source, @Message, @Detail, @StatusCode, @SQL, @FullJson, @ErrorHash, @DuplicateCount)",
+Insert Into Exceptions (GUID, ApplicationName, MachineName, CreationDate, Type, IsProtected, Host, Url, HTTPMethod, IPAddress, Source, Message, Detail, StatusCode, SQL, FullJson, ErrorHash, DuplicateCount, LastDuplicateDate)
+Values (@GUID, @ApplicationName, @MachineName, @CreationDate, @Type, @IsProtected, @Host, @Url, @HTTPMethod, @IPAddress, @Source, @Message, @Detail, @StatusCode, @SQL, @FullJson, @ErrorHash, @DuplicateCount, @LastDuplicateDate)",
                     new {
                             error.GUID,
                             ApplicationName = error.ApplicationName.Truncate(50),
@@ -199,7 +201,8 @@ Values (@GUID, @ApplicationName, @MachineName, @CreationDate, @Type, @IsProtecte
                             error.SQL,
                             error.FullJson,
                             error.ErrorHash,
-                            error.DuplicateCount
+                            error.DuplicateCount,
+                            error.LastDuplicateDate
                         });
             }
         }

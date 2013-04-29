@@ -1,11 +1,11 @@
+using StackExchange.Exceptional.Extensions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Web;
-using System.Collections.Specialized;
 using System.Web.Script.Serialization;
-using StackExchange.Exceptional.Extensions;
 
 namespace StackExchange.Exceptional
 {
@@ -90,6 +90,7 @@ namespace StackExchange.Exceptional
             Detail = e.ToString();
             CreationDate = DateTime.UtcNow;
             DuplicateCount = 1;
+            LastDuplicateDate = CreationDate;
             
             var httpException = e as HttpException;
             if (httpException != null)
@@ -270,6 +271,11 @@ namespace StackExchange.Exceptional
         public int? DuplicateCount { get; set; }
 
         /// <summary>
+        /// Date when DuplicateCount last incremented
+        /// </summary>
+        public DateTime? LastDuplicateDate { get; set; }
+
+        /// <summary>
         /// Gets the SQL command text assocaited with this error
         /// </summary>
         public string SQL { get; set; }
@@ -278,7 +284,7 @@ namespace StackExchange.Exceptional
         /// Date this error was deleted (for stores that support deletion and retention, e.g. SQL)
         /// </summary>
         public DateTime? DeletionDate { get; set; }
-
+        
         /// <summary>
         /// The URL host of the request causing this error
         /// </summary>

@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 
 namespace StackExchange.Exceptional.Stores
 {
@@ -107,6 +107,7 @@ namespace StackExchange.Exceptional.Stores
                     if (dupe != null)
                     {
                         dupe.DuplicateCount += error.DuplicateCount;
+                        dupe.LastDuplicateDate = DateTime.UtcNow;
                         error.GUID = dupe.GUID;
                         return;
                     }
