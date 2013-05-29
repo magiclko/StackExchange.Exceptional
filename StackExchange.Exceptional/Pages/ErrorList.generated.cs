@@ -11,34 +11,39 @@
 
 namespace StackExchange.Exceptional.Pages
 {
-    using System;
     
     #line 2 "..\..\Pages\ErrorList.cshtml"
-    using System.Collections.Generic;
+    using System;
     
     #line default
     #line hidden
     
     #line 3 "..\..\Pages\ErrorList.cshtml"
+    using System.Collections.Generic;
+    
+    #line default
+    #line hidden
+    
+    #line 4 "..\..\Pages\ErrorList.cshtml"
     using System.Linq;
     
     #line default
     #line hidden
     using System.Text;
     
-    #line 4 "..\..\Pages\ErrorList.cshtml"
+    #line 5 "..\..\Pages\ErrorList.cshtml"
     using StackExchange.Exceptional;
     
     #line default
     #line hidden
     
-    #line 6 "..\..\Pages\ErrorList.cshtml"
+    #line 7 "..\..\Pages\ErrorList.cshtml"
     using StackExchange.Exceptional.Extensions;
     
     #line default
     #line hidden
     
-    #line 5 "..\..\Pages\ErrorList.cshtml"
+    #line 6 "..\..\Pages\ErrorList.cshtml"
     using StackExchange.Exceptional.Pages;
     
     #line default
@@ -72,8 +77,9 @@ WriteLiteral("\n");
 
 
 
+
             
-            #line 8 "..\..\Pages\ErrorList.cshtml"
+            #line 9 "..\..\Pages\ErrorList.cshtml"
   
     var log = ErrorStore.Default;
     var errors = new List<Error>();
@@ -84,10 +90,9 @@ WriteLiteral("\n");
     if (!string.IsNullOrEmpty(typefilter))
     {
         var unfilteredCount = errors.Count;
-        errors.RemoveAll(e => e.Type.ToShortException().ToLowerInvariant().Contains(typefilter.ToLowerInvariant()));
+        errors.RemoveAll(e => e.Type.ToShortException().IndexOf(typefilter, StringComparison.OrdinalIgnoreCase) >= 0);
         total = errors.Count;
         suppressedCount = unfilteredCount - total;
-        
     }
     
     Layout = new Master { PageTitle = "Error Log" };

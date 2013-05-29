@@ -63,9 +63,10 @@ $(function () {
     // allow sorting
     table.tablesorter({
         headers: {
-            5: { sorter: 'errorDate' }
+            5: { sorter: 'errorDate' },
+            6: { sorter: 'errorDate' }
         },
-        sortList: [[5, 1]]
+        sortList: [[6, 1]]
     });
 
     // update title on main error log page to show count
