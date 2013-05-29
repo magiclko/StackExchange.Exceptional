@@ -11,9 +11,14 @@
     var total = log.GetAll(errors);
     var typefilter = Request.Params["typefilter"];
     errors = errors.OrderByDescending(e => e.CreationDate).ToList();
+    var suppressedCount = 0;
     if (!string.IsNullOrEmpty(typefilter))
     {
+        var unfilteredCount = errors.Count;
         errors.RemoveAll(e => e.Type.ToShortException().ToLowerInvariant().Contains(typefilter.ToLowerInvariant()));
+        total = errors.Count;
+        suppressedCount = unfilteredCount - total;
+        
     }
     
     Layout = new Master { PageTitle = "Error Log" };
@@ -45,7 +50,12 @@ else
 {
     var last = errors.FirstOrDefault(); // oh the irony
     <h1 id="errorcount">@ErrorStore.ApplicationName - @total Errors; last @last.CreationDate.ToRelativeTime()</h1>
-    <div><label for="tyepfilter">Filter out types containing:</label><input type="text" id="typefilter"/><button id="dofilter">Filter</button></div>
+    <div><label for="tyepfilter">Filter out types containing:</label><input type="text" id="typefilter" value="@typefilter"/><button id="dofilter">Filter</button>
+        @if (!string.IsNullOrEmpty(typefilter))
+        {
+            <span>(@suppressedCount exceptions currently suppressed)</span>
+        }
+    </div>
     <table id="ErrorLog" class="alt-rows">
         <thead>
             <tr>
@@ -103,9 +113,15 @@ else
     </div>
     }
     <script type="text/javascript">
+        doFilter = function() {
+            window.location.href = 'exceptions?typefilter=' + $('#typefilter').val();
+        };
         $(document).ready(function() {
-            $("#dofilter").click(function() {
-                window.location.href = 'admin/exceptions?filtertype=' + $('#typefilter').val();
+            $("#dofilter").click(doFilter);
+            $("#typefilter").keypress(function(e) {
+                if (e.which == 13) {
+                    doFilter();
+                }
             });
         });
     </script>
