@@ -9,7 +9,17 @@
     var log = ErrorStore.Default;
     var errors = new List<Error>();
     var total = log.GetAll(errors);
+    var typefilter = Request.Params["typefilter"];
     errors = errors.OrderByDescending(e => e.CreationDate).ToList();
+    var suppressedCount = 0;
+    if (!string.IsNullOrEmpty(typefilter))
+    {
+        var unfilteredCount = errors.Count;
+        errors.RemoveAll(e => e.Type.ToShortException().ToLowerInvariant().Contains(typefilter.ToLowerInvariant()));
+        total = errors.Count;
+        suppressedCount = unfilteredCount - total;
+        
+    }
     
     Layout = new Master { PageTitle = "Error Log" };
 }
@@ -23,7 +33,7 @@
 @if (log.InFailureMode)
 {
     var le = ErrorStore.LastRetryException;
-    <div class="failure-mode">Error log is in failure mode, @ErrorStore.WriteQueue.Count @(ErrorStore.WriteQueue.Count == 1 ? "entry" : "entries") queued to log.@if(le != null){<text><br />Last Logging Exception: @le.Message</text>}</div>
+    <div class="failure-mode" >Error log is in failure mode, @ErrorStore.WriteQueue.Count @(ErrorStore.WriteQueue.Count == 1 ? "entry" : "entries") queued to log.@if(le != null){<text><br />Last Logging Exception: @le.Message</text>}</div>
     <!-- Exception Details:
     @if(ErrorStore.LastRetryException != null)
     {
@@ -39,7 +49,13 @@
 else
 {
     var last = errors.FirstOrDefault(); // oh the irony
-<h1 id="errorcount">@ErrorStore.ApplicationName - @total Errors; last @last.CreationDate.ToRelativeTime()</h1>
+    <h1 id="errorcount">@ErrorStore.ApplicationName - @total Errors; last @last.CreationDate.ToRelativeTime()</h1>
+    <div><label for="tyepfilter">Filter out types containing:</label><input type="text" id="typefilter" value="@typefilter"/><button id="dofilter">Filter</button>
+        @if (!string.IsNullOrEmpty(typefilter))
+        {
+            <span>(@suppressedCount exceptions currently suppressed)</span>
+        }
+    </div>
     <table id="ErrorLog" class="alt-rows">
         <thead>
             <tr>
@@ -105,4 +121,17 @@ else
         <a class="delete-link clear-all-link" href="@Url("delete-all")">&nbsp;X&nbsp;- Clear all non-protected errors</a>
     </div>
     }
+    <script type="text/javascript">
+        doFilter = function() {
+            window.location.href = 'exceptions?typefilter=' + $('#typefilter').val();
+        };
+        $(document).ready(function() {
+            $("#dofilter").click(doFilter);
+            $("#typefilter").keypress(function(e) {
+                if (e.which == 13) {
+                    doFilter();
+                }
+            });
+        });
+    </script>
 }
