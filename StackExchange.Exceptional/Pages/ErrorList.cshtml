@@ -9,7 +9,12 @@
     var log = ErrorStore.Default;
     var errors = new List<Error>();
     var total = log.GetAll(errors);
+    var typefilter = Request.Params["typefilter"];
     errors = errors.OrderByDescending(e => e.CreationDate).ToList();
+    if (!string.IsNullOrEmpty(typefilter))
+    {
+        errors.RemoveAll(e => e.Type.ToShortException().ToLowerInvariant().Contains(typefilter.ToLowerInvariant()));
+    }
     
     Layout = new Master { PageTitle = "Error Log" };
 }
