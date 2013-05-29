@@ -607,7 +607,7 @@ WriteLiteral("\">&nbsp;X&nbsp;- Clear all non-protected errors</a>\n    </div>\n
 WriteLiteral(@"    <script type=""text/javascript"">
         $(document).ready(function() {
             $(""#dofilter"").click(function() {
-                window.location.href = '/exceptions?filtertype=' + $('#typefilter').val();
+                window.location.href = 'admin/exceptions?filtertype=' + $('#typefilter').val();
             });
         });
     </script>
