@@ -44,7 +44,8 @@
 else
 {
     var last = errors.FirstOrDefault(); // oh the irony
-<h1 id="errorcount">@ErrorStore.ApplicationName - @total Errors; last @last.CreationDate.ToRelativeTime()</h1>
+    <h1 id="errorcount">@ErrorStore.ApplicationName - @total Errors; last @last.CreationDate.ToRelativeTime()</h1>
+    <div><label for="tyepfilter">Filter out types containing:</label><input type="text" id="typefilter"/><button id="dofilter">Filter</button></div>
     <table id="ErrorLog" class="alt-rows">
         <thead>
             <tr>
@@ -101,4 +102,11 @@ else
         <a class="delete-link clear-all-link" href="@Url("delete-all")">&nbsp;X&nbsp;- Clear all non-protected errors</a>
     </div>
     }
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#dofilter").click(function() {
+                window.location.href = '/exceptions?filtertype=' + $('#typefilter').val();
+            });
+        });
+    </script>
 }
